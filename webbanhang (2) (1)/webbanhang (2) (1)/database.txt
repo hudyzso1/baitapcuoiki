@@ -1,0 +1,57 @@
+DROP DATABASE IF EXISTS my_store;
+
+CREATE DATABASE my_store;
+USE my_store;
+
+CREATE TABLE account (
+id INT AUTO_INCREMENT PRIMARY KEY,
+username VARCHAR(255) NOT NULL UNIQUE,
+password VARCHAR(255) NOT NULL,
+role VARCHAR(20) NOT NULL,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE category (
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(100) NOT NULL,
+description TEXT
+);
+
+CREATE TABLE product (
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(100) NOT NULL,
+description TEXT,
+price DECIMAL(10,2) NOT NULL,
+image VARCHAR(255) DEFAULT NULL,
+category_id INT,
+FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE CASCADE
+);
+
+CREATE TABLE orders (
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(255) NOT NULL,
+phone VARCHAR(20) NOT NULL,
+address TEXT NOT NULL,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE order_details (
+id INT AUTO_INCREMENT PRIMARY KEY,
+order_id INT NOT NULL,
+product_id INT NOT NULL,
+quantity INT NOT NULL,
+price DECIMAL(10,2) NOT NULL,
+FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE
+);
+INSERT INTO category (name, description) VALUES
+('Điện thoại', 'Danh mục các loại điện thoại'),
+('Laptop', 'Danh mục các loại laptop'),
+('Máy tính bảng', 'Danh mục các loại máy tính bảng'),
+('Phụ kiện', 'Danh mục phụ kiện điện tử'),
+('Thiết bị âm thanh', 'Danh mục loa, tai nghe, micro');
+
+CREATE INDEX idx_product_category ON product(category_id);
+CREATE INDEX idx_order_details_order ON order_details(order_id);
+CREATE INDEX idx_order_details_product ON order_details(product_id);
